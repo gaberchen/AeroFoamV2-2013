@@ -1,0 +1,28 @@
+/* =============================================================================
+//                   Makefile options for C++ executable vs. Python/C++ wrapper
+// =============================================================================
+// Switch between the options to build the C++ executable (EXE) and to build
+// Python/C++ wrapper library (LIB). Those enviromental variables are defined
+// as follows:
+// - add the following aliases ("w" as wmake, "p" as python) in .bashrc file:
+//   alias wake='export OFEXE=1; export OFLIB=0; wclean; wmake; date;'
+//   alias pake='export OFEXE=0; export OFLIB=1; wclean; wmake; date;'
+// - add the entries -DTOEXE=$(OFEXE), -DTOLIB=$(OFLIB) to the variable GFLAGS 
+//   in the file $WM_DIR/rules/General/general
+// REMARK: No-indenting of filenames lines is critical for wmake to work.
+// REMARK: No-commenting of filenames lines is critical for OpenFOAM-1.7.1.
+// REMARK: PyAeroFoam.C wrapper compilation is tricked with the same syntax of 
+//         an executable by adding -shared flag to link all shared libraries.
+// 
+// Author: Giulio Romanelli, giulio.romanelli@gmail.com
+// ===========================================================================*/
+
+# if TOEXE == 1
+AeroFoam.C
+EXE = $(FOAM_USER_APPBIN)/AeroFoam
+# endif  
+
+# if TOLIB == 1
+PyAeroFoam.C
+EXE = $(FOAM_USER_APPBIN)/PyAeroFoam.so -shared
+# endif

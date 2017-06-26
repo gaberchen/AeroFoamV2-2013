@@ -1,0 +1,107 @@
+/* =============================================================================
+//                         Makefile options file for better cross-compatibility
+// =============================================================================
+// To make it possible to switch in the compilation phase between the various
+// versions of OpenFOAM 1.5-dev - 1.6-ext - 1.7.1 - 2.0.0 it is necessary to:
+// - export OFVERSION=${WM_PROJECT_VERSION:0:1}${WM_PROJECT_VERSION:2:1}, e.g. 
+//   this line can be added in the .bashrc file
+// - add the entry -DVERSION=$(OFVERSION) to the variable GFLAGS in the file
+//   $WM_DIR/rules/General/general
+//
+// Author: Giulio Romanelli, giulio.romanelli@gmail.com
+// ===========================================================================*/
+
+/* -----------------------------------------------------------------------------
+//                                                             OpenFOAM-1.5-dev
+// ---------------------------------------------------------------------------*/
+# if VERSION == 15
+
+include $(RULES)/mplib$(WM_MPLIB)
+
+EXE_INC = $(PFLAGS) $(PINC) \
+          -I$(LIB_SRC)/finiteVolume/lnInclude \
+          -I$(LIB_SRC)/OpenFOAM/lnInclude \
+          -I$(LIB_SRC)/meshTools/lnInclude \
+          -I$(LIB_SRC)/dynamicMesh/lnInclude \
+          -I$(LIB_SRC)/fvMotionSolver/lnInclude \
+          -I/usr/include/python2.6/ \
+         '-DVERSION=${OFVERSION}'
+    
+EXE_LIBS = $(PLIBS) \
+           -lfiniteVolume \
+           -lOpenFOAM \
+           -lmeshTools \
+           -ldynamicMesh \
+           -lfvMotionSolver
+
+/* -----------------------------------------------------------------------------
+//                                                             OpenFOAM-1.6-ext
+// ---------------------------------------------------------------------------*/
+# elif VERSION == 16
+
+include $(RULES)/mplib$(WM_MPLIB)
+
+EXE_INC = $(PFLAGS) $(PINC) \
+          -I$(LIB_SRC)/finiteVolume/lnInclude \
+          -I$(LIB_SRC)/OpenFOAM/lnInclude \
+          -I$(LIB_SRC)/meshTools/lnInclude \
+          -I$(LIB_SRC)/dynamicMesh/lnInclude \
+          -I$(LIB_SRC)/dynamicMesh/dynamicMesh/lnInclude \
+          -I$(LIB_SRC)/dynamicMesh/meshMotion/fvMotionSolver/lnInclude \
+          -I/usr/include/python2.6/ \
+         '-DVERSION=${OFVERSION}'
+  
+EXE_LIBS = $(PLIBS) \
+           -lfiniteVolume \
+           -lOpenFOAM \
+           -lmeshTools \
+           -ldynamicMesh \
+           -lfvMotionSolver
+           
+/* -----------------------------------------------------------------------------
+//                                                               OpenFOAM-1.7.1
+// ---------------------------------------------------------------------------*/
+# elif VERSION == 17
+
+include $(RULES)/mplib$(WM_MPLIB)
+
+EXE_INC = $(PFLAGS) $(PINC) \
+          -I$(LIB_SRC)/finiteVolume/lnInclude \
+          -I$(LIB_SRC)/OpenFOAM/lnInclude \
+          -I$(LIB_SRC)/meshTools/lnInclude \
+          -I$(LIB_SRC)/dynamicMesh/lnInclude \
+          -I$(LIB_SRC)/fvMotionSolver/lnInclude \
+          -I/usr/include/python2.6/ \
+         '-DVERSION=${OFVERSION}'
+    
+EXE_LIBS = $(PLIBS) \
+           -lfiniteVolume \
+           -lOpenFOAM \
+           -lmeshTools \
+           -ldynamicMesh \
+           -lfvMotionSolvers
+
+/* -----------------------------------------------------------------------------
+//                                                               OpenFOAM-2.0.0
+// ---------------------------------------------------------------------------*/
+# elif VERSION == 20
+
+include $(RULES)/../General/mplib$(WM_MPLIB)
+
+EXE_INC = $(PFLAGS) $(PINC) \
+          -I$(LIB_SRC)/finiteVolume/lnInclude \
+          -I$(LIB_SRC)/OpenFOAM/lnInclude \
+          -I$(LIB_SRC)/meshTools/lnInclude \
+          -I$(LIB_SRC)/dynamicMesh/lnInclude \
+          -I$(LIB_SRC)/fvMotionSolver/lnInclude \
+          -I/usr/include/python2.6/ \
+         '-DVERSION=${OFVERSION}'
+    
+EXE_LIBS = $(PLIBS) \
+           -lfiniteVolume \
+           -lOpenFOAM \
+           -lmeshTools \
+           -ldynamicMesh \
+           -lfvMotionSolvers
+                     
+# endif 
