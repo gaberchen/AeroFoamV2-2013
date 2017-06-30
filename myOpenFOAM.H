@@ -18,37 +18,14 @@
 // c) Gather all debugging utilities, e.g. for linking with ParaView run-time.
 // =============================================================================
 
-// Cross-compatibility for OpenFOAM 1.5-dev, 1.6-ext, 1.7.1 and 2.0.0
-#   if VERSION == 15
-# define XFER   0
-# define CYC    1
-# define GGI    1
-# define CYCGGI 0
-# elif VERSION == 16
 # define XFER   1
 # define CYC    1
-# define GGI    1
-# define CYCGGI 1
-# elif VERSION == 17 
-# define XFER   1
-# define CYC    1
-# define GGI    0
+# define GGI    0 //TODO: convert to AMIFvPatch
 # define CYCGGI 0
-# elif VERSION == 20 
-# define XFER   1
-# define CYC    0
-# define GGI    0
-# define CYCGGI 0
-# else
-# error OpenFOAM version not recognized!
-# endif
 
 // System include (parallel and socket communication)
-# include "mpi.h"
-# include "netdb.h"
-# include "netinet/in.h"
-# include "sys/socket.h"
-# include "sys/types.h"
+// changed to Pstream.H
+# include "Pstream.H"
 
 // Mesh and Finite Volume discretization 
 # include "fvCFD.H"
@@ -84,28 +61,24 @@
 // Mesh motion solver
 # include "pointMesh.H"  
 # include "pointFields.H"
-# include "displacementLaplacianFvMotionSolver.H"
+# include "displacementComponentLaplacianFvMotionSolver.H"
 # include "primitivePatchInterpolation.H"
 
 // Ggi support (available only on OpenFOAM 1.5-dev and 1.6-ext)
-# if GGI == 1
-# include "ggiFvPatch.H"
-# include "ggiPolyPatch.H"
-# endif
-
-// CyclicGgi support (available only on OpenFOAM 1.6-ext)
-# if CYCGGI == 1
-# include "cyclicGgiFvPatch.H"
-# include "cyclicGgiPolyPatch.H"
-# endif
+//# if GGI == 1
+//# include "ggiFvPatch.H"
+//# include "ggiPolyPatch.H"
+//# endif
+//
+//// CyclicGgi support (available only on OpenFOAM 1.6-ext)
+//# if CYCGGI == 1
+//# include "cyclicGgiFvPatch.H"
+//# include "cyclicGgiPolyPatch.H"
+//# endif
 
 // =============================================================================
 //                                                                      num2str              
 // =============================================================================
-# if VERSION == 15
-//! Alias for OpenFOAM 1.5-dev for compatibility word/string conversion issues
-inline double num2str( double x ) { return x; }
-# else
 //! Utility to control in MATLAB-like syntax the formatting of numeric strings
 word num2str( double x, int width = 8, int precision = 4 ) 
 {
@@ -113,7 +86,6 @@ word num2str( double x, int width = 8, int precision = 4 )
      sprintf( buffer, "% *.*e ", width, precision, x );
      return word( buffer, false );
 }
-# endif
 
 // =============================================================================
 //                                                                    debugging            

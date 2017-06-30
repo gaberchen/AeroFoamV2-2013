@@ -907,7 +907,7 @@ void totalPreprocessing( label iPatch, myNavierStokes& solution, myNavierStokesP
         T    = Tt/beta;
         u    = Foam::sqrt( 2.0*gamma/( gamma - 1.0 )*( beta - 1.0 )*R*T );
         U    = U/(mag(U) + eps)*u;
-        solution.U().boundaryField()[iPatch][ii] = U;        
+        solution.U().boundaryFieldRef()[iPatch][ii] = U;        
         
         // R and RR conservative variables arrays
         # if RANS_EXTR == 1
@@ -1392,7 +1392,7 @@ void transpirationPreprocessing( label iPatch, myNavierStokes& solution )
 
         // Update U boundary conditions as follows: kinematic/non-linear + geometric
         // REMARK: Normal unit vector points outside the fluid domain for boundary faces
-        solution.U().boundaryField()[iPatch][ii] += -( ( Vb & ( n + dn ) ) - ( U & dn ) )*n; 
+        solution.U().boundaryFieldRef()[iPatch][ii] += -( ( Vb & ( n + dn ) ) - ( U & dn ) )*n; 
     }
 }           
       
@@ -1791,15 +1791,15 @@ void snGradTensor( label iPatch, myMesh& mesh, volVectorField& V, volTensorField
     {
         label i = ii + mesh.boundaryMesh()[iPatch].start();
         vector n = mesh.n()[i];
-        gradV.boundaryField()[iPatch][ii].xx() = snGrad[ii].x()*n.x();
-        gradV.boundaryField()[iPatch][ii].xy() = snGrad[ii].x()*n.y();
-        gradV.boundaryField()[iPatch][ii].xz() = snGrad[ii].x()*n.z();
-        gradV.boundaryField()[iPatch][ii].yx() = snGrad[ii].y()*n.x();
-        gradV.boundaryField()[iPatch][ii].yy() = snGrad[ii].y()*n.y();
-        gradV.boundaryField()[iPatch][ii].yz() = snGrad[ii].y()*n.z();
-        gradV.boundaryField()[iPatch][ii].zx() = snGrad[ii].z()*n.x();
-        gradV.boundaryField()[iPatch][ii].zy() = snGrad[ii].z()*n.y();
-        gradV.boundaryField()[iPatch][ii].zz() = snGrad[ii].z()*n.z();
+        gradV.boundaryFieldRef()[iPatch][ii].xx() = snGrad[ii].x()*n.x();
+        gradV.boundaryFieldRef()[iPatch][ii].xy() = snGrad[ii].x()*n.y();
+        gradV.boundaryFieldRef()[iPatch][ii].xz() = snGrad[ii].x()*n.z();
+        gradV.boundaryFieldRef()[iPatch][ii].yx() = snGrad[ii].y()*n.x();
+        gradV.boundaryFieldRef()[iPatch][ii].yy() = snGrad[ii].y()*n.y();
+        gradV.boundaryFieldRef()[iPatch][ii].yz() = snGrad[ii].y()*n.z();
+        gradV.boundaryFieldRef()[iPatch][ii].zx() = snGrad[ii].z()*n.x();
+        gradV.boundaryFieldRef()[iPatch][ii].zy() = snGrad[ii].z()*n.y();
+        gradV.boundaryFieldRef()[iPatch][ii].zz() = snGrad[ii].z()*n.z();
     }
 }
 
@@ -1864,9 +1864,9 @@ void snGradVector( label iPatch, myMesh& mesh, volScalarField& S, volVectorField
     {
         label i = ii + mesh.boundaryMesh()[iPatch].start();
         vector n = mesh.n()[i];
-        gradS.boundaryField()[iPatch][ii].x() = snGrad[ii]*n.x();
-        gradS.boundaryField()[iPatch][ii].y() = snGrad[ii]*n.y();
-        gradS.boundaryField()[iPatch][ii].z() = snGrad[ii]*n.z();
+        gradS.boundaryFieldRef()[iPatch][ii].x() = snGrad[ii]*n.x();
+        gradS.boundaryFieldRef()[iPatch][ii].y() = snGrad[ii]*n.y();
+        gradS.boundaryFieldRef()[iPatch][ii].z() = snGrad[ii]*n.z();
     }
 }
 
@@ -1995,7 +1995,7 @@ void myNavierStokes::update()
         {
             forAll( _T.boundaryField()[iPatch], ii )
             {
-                _mu.boundaryField()[iPatch][ii] = _thermodynamics.mu( _T.boundaryField()[iPatch][ii] );
+                _mu.boundaryFieldRef()[iPatch][ii] = _thermodynamics.mu( _T.boundaryField()[iPatch][ii] );
             }
         }
     }    

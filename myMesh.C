@@ -5,6 +5,7 @@
 //! Find the extended cell associated to a face along a given direction
 //! TODO: Make this function recursive in such a way that the dimensions of  
 //! eligible points and cells are sufficient. Important on coarse mesh levels.
+#include <typeinfo>
 label findExtendedCell( fvMesh& mesh, label id_Omega, vector x_LR, vector n_LR, scalar S_LR)
 {
     // Variables definition
@@ -472,7 +473,7 @@ bool myLinearTransformation( myMesh& mesh, volVectorField& displacement, vector&
                 i = ii + mesh.boundaryMesh()[iPatch].start(); 
                 dsr = s + ( TT & mesh.Cfr()[i] );
                 forAll( HH, k ) dsr = dsr + ( HH[k] & mesh.Cfr()[i] )*Foam::pow( mag( mesh.Cfr()[i] - pp[k] )/box, oo[k] );
-                displacement.boundaryField()[iPatch][ii] = displacement.boundaryField()[iPatch][ii] - dsr;                
+                displacement.boundaryFieldRef()[iPatch][ii] = displacement.boundaryField()[iPatch][ii] - dsr;                
                 dse = mag( displacement.boundaryField()[iPatch][ii] )/Foam::sqrt( mesh.Sfr()[i] );                
                 if ( dse > max ) max = dse;
             }
@@ -551,11 +552,14 @@ void myMesh::updateALE( scalar t, scalar dt, scalar weight = 1.0 )
         if ( _mesh.boundaryMesh().types()[iPatch] != "empty" )
         {
             // Loop on iPatch-th faces
+
             forAll( _mesh.boundaryMesh()[iPatch], ii )
             {
-                _smoother->cellDisplacement().boundaryField()[iPatch][ii] =
-                                _displacement.boundaryField()[iPatch][ii] + 
-                                 dt*_velocity.boundaryField()[iPatch][ii]*weight; // Setting weight = 0 extrapolation can be turned off  
+		double a =_displacement.boundaryField()[iPatch][ii] ; 
+		double b = dt*_velocity.boundaryField()[iPatch][ii]*weight; // Setting weight = 0 extrapolation can be turned off  
+                double c = _smoother->cellDisplacement().boundaryFieldRef()[iPatch][ii];
+                double d = _smoother->cellDisplacement().boundaryFieldRef()[iPatch];
+                double e = _smoother->cellDisplacement().boundaryFieldRef();
             }
         }
     }    
@@ -622,7 +626,7 @@ void myMesh::updateALE( scalar t, scalar dt, scalar weight = 1.0 )
         label k = _offset[Pstream::myProcNo()];
         forAll( _smoother->cellDisplacement().boundaryField(), iPatch )
         {
-            if ( _smoother->cellDisplacement().boundaryField()[iPatch].type() == "fixedValue" )
+            if ( _smoother->cellDisplacement().boundaryFieldRef()[iPatch].type() == "fixedValue" )
             {
                 forAll( _smoother->cellDisplacement().boundaryField()[iPatch], ii )
                 {
@@ -726,9 +730,9 @@ void myMesh::updateALE( scalar t, scalar dt, scalar weight = 1.0 )
                 forAll( _mesh.boundaryMesh()[iPatch], ii )
                 {
                     //label i = ii + _mesh.boundaryMesh()[iPatch].start();
-                    _displacement.boundaryField()[iPatch][ii] = _cellDisplacement.boundaryField()[iPatch][ii];                    
-                    //_velocity.boundaryField()[iPatch][ii] = _velocity.boundaryField()[iPatch][ii] - _Vf[i]*_n[i];
-                    _velocity.boundaryField()[iPatch][ii] = vector( 0.0, 0.0, 0.0 );
+                    _displacement.boundaryFieldRef()[iPatch][ii] = _cellDisplacement.boundaryField()[iPatch][ii];                    
+                    //_velocity.boundaryFieldRef()[iPatch][ii] = _velocity.boundaryField()[iPatch][ii] - _Vf[i]*_n[i];
+                    _velocity.boundaryFieldRef()[iPatch][ii] = vector( 0.0, 0.0, 0.0 );
                 }
             }
         }   
@@ -1023,7 +1027,7 @@ void myMesh::updateTranspiration( scalar t, scalar dt, scalar weight = 1.0 )
                 }
                 
                 // Update
-                _rotation.boundaryField()[iPatch][idFace] = dn;     
+                _rotation.boundaryFieldRef()[iPatch][idFace] = dn;     
             }
             
             /*      
@@ -1086,7 +1090,7 @@ void myMesh::updateTranspiration( scalar t, scalar dt, scalar weight = 1.0 )
                                 label ii = localPointFaces[idPoint][idFace];
                                 if ( tags[ii] > 0 )
                                 {
-                                    _rotation.boundaryField()[iPatch][ii] = dn;
+                                    _rotation.boundaryFieldRef()[iPatch][ii] = dn;
                                     tags[ii] = 0;
                                 }
                             } 
@@ -1121,7 +1125,7 @@ void myMesh::updateTranspiration( scalar t, scalar dt, scalar weight = 1.0 )
                 }
                 
                 // Update
-                _rotation.boundaryField()[iPatch][idFace] = dn;     
+                _rotation.boundaryFieldRef()[iPatch][idFace] = dn;     
             }
             */                        
         }
@@ -1137,7 +1141,7 @@ void myMesh::updateTranspiration( scalar t, scalar dt, scalar weight = 1.0 )
             // Loop on iPatch-th faces
             forAll( _mesh.boundaryMesh()[iPatch], ii )
             {
-                _cellDisplacement.boundaryField()[iPatch][ii] = _displacement.boundaryField()[iPatch][ii];
+                _cellDisplacement.boundaryFieldRef()[iPatch][ii] = _displacement.boundaryField()[iPatch][ii];
             }
         }
     }     

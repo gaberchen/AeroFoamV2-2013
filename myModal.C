@@ -1276,8 +1276,8 @@ void myModal::structuralDisplacements( )
             // Copy onto displacement and velocity exchange buffers
             forAll( _mesh.boundaryMesh()[iPatch].faceAreas(), ii )
             {             
-                _displacement.boundaryField()[iPatch][ii] = _ua[iPatch][ii];
-                _velocity.boundaryField()[iPatch][ii] = _uadot[iPatch][ii];
+                _displacement.boundaryFieldRef()[iPatch][ii] = _ua[iPatch][ii];
+                _velocity.boundaryFieldRef()[iPatch][ii] = _uadot[iPatch][ii];
             }
         }
     }     

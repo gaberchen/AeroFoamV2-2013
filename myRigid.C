@@ -1038,13 +1038,13 @@ void myRigid::structuralDisplacements( )
                     {
                         if ( ( xr.z() > _box[2][0] ) && ( xr.z() < _box[2][1] ) )
                         {          
-                            _displacement.boundaryField()[iPatch][ii] = _r + ( RR & ( _mesh.Cfr()[i] - _r ) ) + _s - _mesh.Cfr()[i];
-                            _velocity.boundaryField()[iPatch][ii] = _rdot + ( _omega ^ ( _mesh.Cfr()[i] - _r ) ) - ( RR & _rdot ) + _sdot;
+                            _displacement.boundaryFieldRef()[iPatch][ii] = _r + ( RR & ( _mesh.Cfr()[i] - _r ) ) + _s - _mesh.Cfr()[i];
+                            _velocity.boundaryFieldRef()[iPatch][ii] = _rdot + ( _omega ^ ( _mesh.Cfr()[i] - _r ) ) - ( RR & _rdot ) + _sdot;
                             
                             // Possible simplifications for a better mesh quality 
-                            if ( _simplifications[1] == "x" ) _displacement.boundaryField()[iPatch][ii].x() = 0.0; 
-                            if ( _simplifications[1] == "y" ) _displacement.boundaryField()[iPatch][ii].y() = 0.0; 
-                            if ( _simplifications[1] == "z" ) _displacement.boundaryField()[iPatch][ii].z() = 0.0;
+                            if ( _simplifications[1] == "x" ) _displacement.boundaryFieldRef()[iPatch][ii].x() = 0.0; 
+                            if ( _simplifications[1] == "y" ) _displacement.boundaryFieldRef()[iPatch][ii].y() = 0.0; 
+                            if ( _simplifications[1] == "z" ) _displacement.boundaryFieldRef()[iPatch][ii].z() = 0.0;
                         } 
                     } 
                 }

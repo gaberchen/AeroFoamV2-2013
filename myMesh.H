@@ -122,8 +122,9 @@ class myMesh
             // TODO: Check how to define cellDisplacement boundary types across processor boundaries     
             _pointDisplacement.write();
             _cellDisplacement.write();  
-            primitiveEntry options("", ""); 
-            _smoother = new displacementLaplacianFvMotionSolver( _mesh, options );
+		// create an empty IOdictionary for later use.
+            IOdictionary options(IOobject("p", _time.timeName(), _mesh, IOobject::READ_IF_PRESENT, IOobject::AUTO_WRITE )); 
+            _smoother = new displacementComponentLaplacianFvMotionSolver( _mesh, options );
             label output = 0;
             output = system("rm -rf " + _time.timeName() + "/pointDisplacement* > /dev/null 2>&1"); 
             //output = system("rm -rf " + _time.timeName() + "/cellDisplacement* > /dev/null 2>&1");
@@ -230,7 +231,7 @@ class myMesh
             label Nr = 0;
             forAll( _smoother->cellDisplacement().boundaryField(), iPatch )
             {
-                if ( _smoother->cellDisplacement().boundaryField()[iPatch].type() == "fixedValue" )
+                if ( _smoother->cellDisplacement().boundaryFieldRef()[iPatch].type() == "fixedValue" )
                 {
                     forAll( _smoother->cellDisplacement().boundaryField()[iPatch], ii )
                     {
@@ -253,7 +254,7 @@ class myMesh
             label k = _offset[Pstream::myProcNo()];
             forAll( _smoother->cellDisplacement().boundaryField(), iPatch )
             {
-                if ( _smoother->cellDisplacement().boundaryField()[iPatch].type() == "fixedValue" )
+                if ( _smoother->cellDisplacement().boundaryFieldRef()[iPatch].type() == "fixedValue" )
                 {
                     forAll( _smoother->cellDisplacement().boundaryField()[iPatch], ii )
                     {
@@ -541,13 +542,13 @@ class myMesh
         
     //! Grid elastic deformation by means of OpenFOAM built-in fvMotionSolver class
     //! REMARK: To get access to pointDisplacement/cellDisplacement fields runtime
-    //! without writing to file the low-level displacementLaplacianFvMotionSolver
+    //! without writing to file the low-level displacementComponentLaplacianFvMotionSolver
     //! is used. This guarantees a divergence-free mesh displacement field, e.g. to
     //! be used with the alternative ALE strategy of adding source-terms v*grad(X)
     pointMesh _pointMesh;
     pointVectorField _pointDisplacement;
     volVectorField _cellDisplacement;
-    displacementLaplacianFvMotionSolver* _smoother;
+    displacementComponentLaplacianFvMotionSolver* _smoother;
     label _iterations;
     
     //! Inverse Distance Weighting (IDW) interpolation

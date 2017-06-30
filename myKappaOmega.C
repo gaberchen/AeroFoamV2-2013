@@ -928,7 +928,7 @@ void myKappaOmega::update()
             {
                 label i     = ii + _mesh.boundaryMesh()[iPatch].start();
                 label id_L  = _mesh.L()[i];
-                _omega.boundaryField()[iPatch][ii] = 6.0*_NavierStokes.mu()[id_L]/( _beta1*_NavierStokes.rho()[id_L]*sqr( _d.y()[id_L] ) );
+                _omega.boundaryFieldRef()[iPatch][ii] = 6.0*_NavierStokes.mu()[id_L]/( _beta1*_NavierStokes.rho()[id_L]*sqr( _d.y()[id_L] ) );
             }
         }
     }

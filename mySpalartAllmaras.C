@@ -108,7 +108,7 @@ volScalarField mySpalartAllmaras::r( volTensorField gradU, volScalarField rho, v
 {   
     // Variables definition
     volScalarField r = min( nuTilda/( STilda(gradU, rho, mu, nuTilda, d)*sqr(_k)*sqr(d) ), 10.0 ); // [NASA]
-    r.boundaryField() == 0.0;
+    r.boundaryFieldRef() == 0.0;
     
     // Return
     return r;
@@ -135,7 +135,7 @@ volScalarField mySpalartAllmaras::g( volScalarField r )
 {   
     // Variables definition
     volScalarField g = min( r + _Cw2*( Foam::pow( r, 6.0 ) - r ), 1000.0 );
-    g.boundaryField() == 0.0;
+    g.boundaryFieldRef() == 0.0;
     
     // Return
     return g;
@@ -159,7 +159,7 @@ volScalarField mySpalartAllmaras::fw( volScalarField g )
 {
     // Variables definition
     volScalarField fw =  g*Foam::pow( ( 1 + Foam::pow( _Cw3, 6.0 ) )/( Foam::pow( g, 6.0 ) + Foam::pow( _Cw3, 6.0 ) ), 1.0/6.0 );
-    fw.boundaryField() == 0.0;
+    fw.boundaryFieldRef() == 0.0;
    
     // Return
     return fw;
@@ -1004,14 +1004,14 @@ void mySpalartAllmaras::wallFunctions( )
                             err = mag( nuTilda - old )/mag( old );
                             k = k + 1;
                         }                 
-                        //_nuTilda.boundaryField()[iPatch][ii] = nuTilda;
-                        _NavierStokes.muTur().boundaryField()[iPatch][ii] = muTur;
+                        //_nuTilda.boundaryFieldRef()[iPatch][ii] = nuTilda;
+                        _NavierStokes.muTur().boundaryFieldRef()[iPatch][ii] = muTur;
                     }
                     // Default initialization to zero
                     else
                     {
-                        //_nuTilda.boundaryField()[iPatch][ii] = 0.0;
-                        _NavierStokes.muTur().boundaryField()[iPatch][ii] = 0.0;
+                        //_nuTilda.boundaryFieldRef()[iPatch][ii] = 0.0;
+                        _NavierStokes.muTur().boundaryFieldRef()[iPatch][ii] = 0.0;
                     }
                 } 
                 
@@ -1021,8 +1021,8 @@ void mySpalartAllmaras::wallFunctions( )
                 // Default initialization to zero
                 forAll( _mesh.boundaryMesh()[iPatch].faceAreas(), ii )
                 {  
-                    //_nuTilda.boundaryField()[iPatch][ii] = 0.0;
-                    _NavierStokes.muTur().boundaryField()[iPatch][ii] = 0.0;            
+                    //_nuTilda.boundaryFieldRef()[iPatch][ii] = 0.0;
+                    _NavierStokes.muTur().boundaryFieldRef()[iPatch][ii] = 0.0;            
                 }        
             }     
         }      
